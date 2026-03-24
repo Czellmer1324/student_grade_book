@@ -90,14 +90,18 @@ class StudentClass {
         saveInfo()
     }
 
-    fun addAssignment(name : String, assignmentName : String, grade : Int) = runBlocking {
-        val stu = students[name]
-        val assignment = Assignment(stu?.name, assignmentName, grade)
-        stu?.addAssignment(assignment)
+    fun addAssignment(name : String, assignmentName : String, grade : Int) : Boolean = runBlocking {
+        val stu = students[name] ?: return@runBlocking false
+
+        val assignment = Assignment(stu.name, assignmentName, grade)
+        stu.addAssignment(assignment)
         launch(Dispatchers.Default) {
             calculateGpa()
         }
+
         saveInfo()
+
+        true
     }
 
     fun calculateGpa() {
