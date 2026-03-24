@@ -112,7 +112,13 @@ class StudentClass {
         avgGPA = total / students.size
     }
 
-    
+    fun viewTopStudent() : Student? {
+        return topStudent
+    }
+
+    fun viewBottomStudent() : Student? {
+        return bottomStudent
+    }
 
     fun viewGPA() : String{
         return String.format("%.2f", avgGPA)
