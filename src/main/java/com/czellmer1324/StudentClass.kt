@@ -91,9 +91,10 @@ class StudentClass {
         saveInfo()
     }
 
-    fun addAssignment(stu : Student, assignmentName : String, grade : Int) = runBlocking {
-        val assignment = Assignment(stu.name, assignmentName, grade)
-        stu.addAssignment(assignment)
+    fun addAssignment(name : String, assignmentName : String, grade : Int) = runBlocking {
+        val stu = students[name]
+        val assignment = Assignment(stu?.name, assignmentName, grade)
+        stu?.addAssignment(assignment)
         launch(Dispatchers.Default) {
             calculateGpa()
         }
@@ -113,8 +114,12 @@ class StudentClass {
         return String.format("%.2f", avgGPA)
     }
 
-    fun viewStudents() : HashMap<String, Student> {
-        return students
+    fun viewStudents() : Collection<Student> {
+        return students.values
+    }
+
+    fun getStudentNames() : Set<String> {
+        return students.keys
     }
 
     fun saveInfo() = runBlocking {
@@ -142,16 +147,12 @@ class StudentClass {
 
             assignments.forEach { string ->
                 assignmentWriter.write(string)
-                if (assignments.last() != string) {
-                    assignmentWriter.newLine()
-                }
+                assignmentWriter.newLine()
             }
 
             studentList.forEach { string ->
                 studentWriter.write(string)
-                if (studentList.last() != string) {
-                    studentWriter.newLine()
-                }
+                studentWriter.newLine()
             }
 
             assignmentWriter.close()

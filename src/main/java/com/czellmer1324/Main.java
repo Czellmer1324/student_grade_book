@@ -13,15 +13,14 @@ public class Main {
         IO.println("Hello");
         stuClass.addStudent("Cody");
         stuClass.addStudent("Jenna");
-        stuClass.viewStudents().forEach((s, student) -> {
-            IO.println(s);
-            IO.println(student.getGpa());
+        stuClass.viewStudents().forEach((s) -> {
+            IO.println(s.getName());
+            IO.println(s.getGpa());
         });
 
         IO.println(stuClass.viewGPA());
         IO.println("Select the student you want to add a grade for");
-        HashMap<String, Student> students = stuClass.viewStudents();
-        Set<String> names = students.keySet();
+        Set<String> names = stuClass.getStudentNames();
 
         int counter = 1;
         for (String name : names) {
@@ -30,7 +29,7 @@ public class Main {
         }
 
         String name = sc.nextLine();
-        stuClass.addAssignment(students.get(name), "random", 93);
+        stuClass.addAssignment(name, "random", 93);
 
         IO.println(stuClass.viewGPA());
 
