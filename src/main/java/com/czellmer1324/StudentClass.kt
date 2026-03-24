@@ -120,6 +120,11 @@ class StudentClass {
         return bottomStudent
     }
 
+    fun removeStudent(name: String) {
+        students.remove(name)
+        saveInfo()
+    }
+
     fun viewGPA() : String{
         return String.format("%.2f", avgGPA)
     }
