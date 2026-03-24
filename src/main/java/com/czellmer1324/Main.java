@@ -1,6 +1,5 @@
 package com.czellmer1324;
 
-import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Set;
 

@@ -3,7 +3,6 @@ package com.czellmer1324
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import java.io.BufferedReader
 import java.io.BufferedWriter
 import java.io.FileReader
@@ -104,11 +103,16 @@ class StudentClass {
     fun calculateGpa() {
         var total = 0.00f
         students.forEach { (string, student) ->
-            total += student.gpa
+            val gpa = student.gpa
+            total += gpa
+            if (gpa > topStudent!!.gpa) topStudent = student
+            else if (gpa < bottomStudent!!.gpa) bottomStudent = student
         }
 
         avgGPA = total / students.size
     }
+
+    
 
     fun viewGPA() : String{
         return String.format("%.2f", avgGPA)
@@ -116,6 +120,10 @@ class StudentClass {
 
     fun viewStudents() : Collection<Student> {
         return students.values
+    }
+
+    fun viewStudent(name: String) : Student? {
+        return students[name]
     }
 
     fun getStudentNames() : Set<String> {
