@@ -134,6 +134,10 @@ class StudentClass {
         saveInfo()
     }
 
+    fun viewStudentAssignments(name: String) : ArrayList<Assignment> {
+        return students[name]?.getAssignments() ?: ArrayList()
+    }
+
     fun viewGPA() : String{
         return String.format("%.2f", avgGPA)
     }
