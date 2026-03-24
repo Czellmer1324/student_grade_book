@@ -105,8 +105,8 @@ class StudentClass {
         students.forEach { (string, student) ->
             val gpa = student.gpa
             total += gpa
-            if (gpa > topStudent!!.gpa) topStudent = student
-            else if (gpa < bottomStudent!!.gpa) bottomStudent = student
+            if (gpa > (topStudent?.gpa ?: Float.NEGATIVE_INFINITY)) topStudent = student
+            else if (gpa < (bottomStudent?.gpa ?: Float.MAX_VALUE)) bottomStudent = student
         }
 
         avgGPA = total / students.size
