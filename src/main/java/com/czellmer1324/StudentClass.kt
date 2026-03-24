@@ -41,13 +41,11 @@ class StudentClass {
 
             total += s.gpa
 
-            if (topStudent == null) topStudent = s
-            else if (s.gpa > topStudent!!.gpa) {
+            if (s.gpa > (topStudent?.gpa ?: Float.NEGATIVE_INFINITY)) {
                 topStudent = s
             }
 
-            if (bottomStudent == null) bottomStudent = s
-            if (s.gpa < bottomStudent!!.gpa) {
+            if (s.gpa < (bottomStudent?.gpa ?: Float.MAX_VALUE)) {
                 bottomStudent = s
             }
         }
@@ -65,8 +63,11 @@ class StudentClass {
         var line = reader.readLine()
 
         while (line != null) {
-            val values = line.split(commaDelimiter)
-            info.add(values)
+            if (line.isNotBlank()) {
+                val values = line.split(commaDelimiter)
+                info.add(values)
+            }
+
             line = reader.readLine()
         }
 
@@ -154,42 +155,40 @@ class StudentClass {
         return students.keys
     }
 
-    fun saveInfo() = runBlocking {
-        launch(Dispatchers.IO) {
-            val assignmentWriter = BufferedWriter(FileWriter("assignments.csv"))
-            val studentWriter = BufferedWriter(FileWriter("class.csv"))
-            val assignments = ArrayList<String>()
-            val studentList = ArrayList<String>()
-            students.forEach { (name, student) ->
-                student.getAssignments().forEach { a ->
-                    val builder = StringBuilder()
-                    builder.append(a.studentName)
-                    builder.append(',')
-                    builder.append(a.assignmentName)
-                    builder.append(',')
-                    builder.append(a.grade)
-                    assignments.add(builder.toString())
-                }
+    fun saveInfo() {
+        val assignmentWriter = BufferedWriter(FileWriter("assignments.csv"))
+        val studentWriter = BufferedWriter(FileWriter("class.csv"))
+        val assignments = ArrayList<String>()
+        val studentList = ArrayList<String>()
+        students.forEach { (name, student) ->
+            student.getAssignments().forEach { a ->
                 val builder = StringBuilder()
-                builder.append(name)
+                builder.append(a.studentName)
                 builder.append(',')
-                builder.append(student.gpa)
-                studentList.add(builder.toString())
+                builder.append(a.assignmentName)
+                builder.append(',')
+                builder.append(a.grade)
+                assignments.add(builder.toString())
             }
-
-            assignments.forEach { string ->
-                assignmentWriter.write(string)
-                assignmentWriter.newLine()
-            }
-
-            studentList.forEach { string ->
-                studentWriter.write(string)
-                studentWriter.newLine()
-            }
-
-            assignmentWriter.close()
-            studentWriter.close()
-
+            val builder = StringBuilder()
+            builder.append(name)
+            builder.append(',')
+            builder.append(student.gpa)
+            studentList.add(builder.toString())
         }
+
+        assignments.forEach { string ->
+            assignmentWriter.write(string)
+            assignmentWriter.newLine()
+        }
+
+        studentList.forEach { string ->
+            studentWriter.write(string)
+            studentWriter.newLine()
+        }
+
+        assignmentWriter.close()
+        studentWriter.close()
+
     }
 }
