@@ -5,6 +5,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.BufferedReader
 import java.io.BufferedWriter
+import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
 
@@ -13,7 +14,7 @@ class StudentClass {
     private var avgGPA : Float = 0.00f
     private var topStudent : Student? = null
     private var bottomStudent: Student? = null
-    private val COMMA_DELIMITER = ","
+    private val commaDelimiter = ","
 
 
     init {
@@ -26,17 +27,9 @@ class StudentClass {
     }
 
     private fun loadStudents() {
-        val studentInfo = ArrayList<List<String>>()
-        val reader = BufferedReader(FileReader("class.csv"))
-        var line = reader.readLine()
+        val file = File("class.csv")
 
-        while (line != null) {
-            val values = line.split(COMMA_DELIMITER)
-            studentInfo.add(values)
-            line = reader.readLine()
-        }
-
-        reader.close()
+        val studentInfo = getLines(file)
 
         if (studentInfo.isEmpty()) return
 
@@ -62,20 +55,32 @@ class StudentClass {
         avgGPA = total / students.size
     }
 
-    private fun loadAssignments() {
-        if (students.isEmpty()) return
+    private fun getLines(file : File) : ArrayList<List<String>> {
+        if (!file.exists()) {
+            file.createNewFile()
+        }
 
-        val assignmentInfo = ArrayList<List<String>>()
-        val reader = BufferedReader(FileReader("assignments.csv"))
+        val info = ArrayList<List<String>>()
+        val reader = BufferedReader(FileReader(file))
         var line = reader.readLine()
 
         while (line != null) {
-            val value = line.split(COMMA_DELIMITER)
-            assignmentInfo.add(value)
+            val values = line.split(commaDelimiter)
+            info.add(values)
             line = reader.readLine()
         }
 
         reader.close()
+
+        return info
+    }
+
+    private fun loadAssignments() {
+        if (students.isEmpty()) return
+
+        val file = File("assignments.csv")
+
+        val assignmentInfo = getLines(file)
 
         assignmentInfo.forEach { info ->
             val studentName = info[0]
@@ -106,7 +111,7 @@ class StudentClass {
 
     fun calculateGpa() {
         var total = 0.00f
-        students.forEach { (string, student) ->
+        students.forEach { (_, student) ->
             val gpa = student.gpa
             total += gpa
             if (gpa > (topStudent?.gpa ?: Float.NEGATIVE_INFINITY)) topStudent = student
